@@ -17,16 +17,6 @@ public class Facade {
 		
 		// Setup del sistema
 		baseStation.joinToMe();
-		
-		/**
-		 * TODO per lo scemo:
-		 * Su Channel:
-		 * 		- getIDs() per ottere un Vector di ID (macchine in quel canale);
-		 * Sulle macchine:
-		 * 		- getSpeed();
-		 * 		- getDisplay();
-		 * 		- getCarId();
-		 * 
-		 */
+
 	}
 }

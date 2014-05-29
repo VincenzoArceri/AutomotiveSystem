@@ -8,13 +8,14 @@ public class ManualCar implements Observer {
 	private String display;
 	private float speed;
 	private Channel channel;
+	private Timer timer;
 	private Subject baseStation;
-
+	
 	public ManualCar(String id, Subject base) {
 		this.baseStation = base;
 		this.idCar = id;
 		this.speed = 0;
-		this.display = new String("I'm alive! :)");
+		this.timer = new Timer();
 	}
 
 	@Override
@@ -35,10 +36,7 @@ public class ManualCar implements Observer {
 			}
 			else if (packet.text.equals("You're logged")) {
 				this.channel = packet.channel;
-				System.out.println(idCar + ">> Loggato! :D");
-				// LANCIO LOOP
 
-				Timer timer = new Timer();
 				timer.schedule(new TimerTask() {
 
 					@Override
@@ -46,10 +44,16 @@ public class ManualCar implements Observer {
 						sendPacket();
 					}
 				}, 0, packetRate);
+
 			} else if (packet.text.equals("You're OK!")) {
 				System.out.println(idCar + ">> Sto andando bene");
+				//sendPacket();
 			} else if (packet.text.equals("You have to decrease your speed!")) {
 				System.out.println(idCar + ">> Non sto andando molto bene andando bene");
+				//sendPacket();
+			} else if (packet.text.equals("Go away!")) {
+				timer.cancel();
+				idCar = "-1";
 			}
 		} else
 			return;
@@ -61,15 +65,15 @@ public class ManualCar implements Observer {
 		channel.dispatchPacketToStation(packet);
 		System.out.println(idCar + ">> Velocità inviata: " + packet.newSpeed);
 	}
-	
+
 	public String getCarId() {
 		return idCar;
 	}
-	
+
 	public int getSpeed() {
 		return (int) speed;
 	}
-	
+
 	public String getDisplay() {
 		return display;
 	}
