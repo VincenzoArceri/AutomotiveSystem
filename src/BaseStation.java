@@ -4,11 +4,14 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 /**
- * Il funzionamento di BaseStation è il seguente:ù
+ * Il funzionamento di BaseStation è il seguente:
  * 	- BaseStation manda in broadcast un messaggio invitando le macchine ad effettare il join;
  * 	- successivamente, riceverà i pacchetti con le velocità delle macchine;
- * 	- effettua il confronto con la threshold e invia i relativi messaggi in broadcast
-*/
+ * 	- effettua il confronto con la threshold e invia i relativi messaggi in broadcast.
+ * 
+ * @author Vincenzo Arceri, Matteo Calabria, Pietro Musoni, Carlo Tacchella
+ *
+ */
 public class BaseStation implements FactoryChannel, Subject {
 	/**
 	 * Variabile che indica il limite di velocità delle macchine
@@ -40,32 +43,49 @@ public class BaseStation implements FactoryChannel, Subject {
 	 */
 	private int packetRate = 1000;
 	
+	/**
+	 * Vector di Packet inviati dai canali
+	 */
 	Vector<Packet> packets = new Vector<Packet>();
 	
+	/**
+	 * Tempo di deregistrazione di un'auto: ogni 12 secondi vengono deregistrate delle auto
+	 */
 	private int timeToUnregister = 12000;
 	
+	/**
+	 * Timer per l'invio dei Packet: ogni packetRate ms vengono prelevati i messaggi dal
+	 * Vector packets e vengono esaminati.
+	 */
 	private Timer timer;
 	
+	/**
+	 * Timer per deregistrare delle auto dal sistema: ogni 12 secondi vengono deregistrate
+	 * delle auto dal sistema.
+	 */
 	private Timer timerToUnregister;
 	
+	/**
+	 * Costruttore della classe BaseStation
+	 */
 	public BaseStation() {
-		/**
-		 * Inizialmente ci sarà un solo canale attivo, Channel1
-		 */
+		// Inizialmente ci sarà solamente un canale attivo
 		channels[0] = createChannel("Channel1");	
 		channelsCreated++;
+		// Inizializzo i timer
 		this.timer = new Timer();
 		this.timerToUnregister = new Timer();
 	}
+	
 	/**
 	 * Metodo per invitare tutti le auto a registrarsi al sistema
 	 */
 	public void joinToMe() {
 		Packet packet = new Packet("Broadcast", "Join", null, null, 0);
-		
-		for (ManualCar car: allCars) 
-			car.update(packet);
-		
+
+		notifyObservers(packet);
+
+		// Inizializzo il timer per il checking dei messaggi
 		timer.schedule(new TimerTask() {
 
 			@Override
@@ -118,6 +138,8 @@ public class BaseStation implements FactoryChannel, Subject {
 	 * @return pacchetto da inviare all'auto
 	 */
 	private Packet registerAutomaticCar(String id) {
+		
+		// Per ogni canale attivo controllo che sia libero
 		for (int i = 0; i < channelsCreated; i++) {
 			if (channels[i].isFull() && !channels[i].getId().equals("Channel" + numberChannel))
 				continue;
@@ -186,8 +208,9 @@ public class BaseStation implements FactoryChannel, Subject {
 	}
 
 	@Override
-	public void notifyObservers() {
-				
+	public void notifyObservers(Packet packet) {
+		for (ManualCar car: allCars) 
+			car.update(packet);		
 	}
 	
 	public void receivePacket(Packet packet) {	
