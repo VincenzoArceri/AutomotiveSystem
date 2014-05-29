@@ -7,48 +7,41 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
+
 import javax.swing.*;
 
 
 public class Simulator extends JFrame{
+	public static Facade facade;
 
 	static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	static int X = (screen.width / 2); 
 	static int Y = (screen.height / 2); 
 	private static String[] columnNames = { "Car id", "speed", "type", "display", "action"}; 
-	private static String actualChannel;
+	private static String actualChannel = "channel 1";
 	private static String[] chStrings = { "channel 5", "channel 4", "channel 3", "channel 2", "channel 1" };
 	
-	private static void showCars() {
+	static void showCars() {
+		facade = new Facade();
+		
 		
 		JPanel contUp = new JPanel();
 
-		JComboBox chList = new JComboBox(chStrings);
-		chList.setSelectedIndex(4);
+	
+	
 
-		chList.addActionListener(
-		new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {	
-				JComboBox cb = (JComboBox)e.getSource();
-		        String chName = (String)cb.getSelectedItem();
-		        actualChannel = chName;
-			}
-		});
-		
-		JTable table = new JTable(createTable(actualChannel), chStrings);
-		
+	
 		JFrame carWindow = new JFrame("Cars");
 
-		//Container body = carWindow.getContentPane();
+		
 
 		
 		carWindow.add(contUp);
-		table.setPreferredSize(new Dimension(700, 320));
 	
-		contUp.add(chList, BorderLayout.LINE_START);
-		contUp.add(table, BorderLayout.LINE_END);
+	 
+	
+		
 		
 
 		carWindow.setSize(740, 400);
@@ -125,29 +118,32 @@ public class Simulator extends JFrame{
 		Object[][] data = new Object[20][5]; 
 		data[0] = columnNames;	  
 		
-		/*carinchannel1[] car1 = ...
-		 * carinchannel1[] car2 = ...
-		 * 
-		 * switch(channel) {
-		 * case ("channel1"): 
-		 * for(int i = 0; i < CarInChannel;i++)
-			data[i] = {
-				carinchannel1[i].carId, ...carSpeed, ...carType, ...carDisplay, ...carAction
-			}
-			
-			...
-		}
-		
-		*/
+		int count = 0;
+		int i=0;
+		int h=0;
+				
+		for(ManualCar m : facade.baseStation.allCars){
+			 	i++;
+			 	for(h=0; h<4;h++)
+				switch(h){
+				case(0): data[i][h] = m.getCarId(); break;
+				case(1): data[i][h] = "" + m.getSpeed(); break;
+				case(2): data[i][h] = m.getDisplay(); break;
+				case(3): data[i][h] = "booooooo"; break;
+				}
+				
+			}	
 			
 		
 		return data;
 	}
 	
-	public static void main(String[] args){
-		showCars();
-		showChannels();
-		showBase();
+	public static void main(String args[]){
+	
+		Simulator.showCars();
+		Simulator.showChannels();
+		Simulator.showBase();
 	}
+	
 	
 }
