@@ -22,7 +22,6 @@ public class Simulator extends JFrame{
 	private static void showCars() {
 		
 		JPanel contUp = new JPanel();
-		JPanel contDown = new JPanel();
 
 		JComboBox chList = new JComboBox(chStrings);
 		chList.setSelectedIndex(4);
@@ -52,8 +51,8 @@ public class Simulator extends JFrame{
 		contUp.add(table, BorderLayout.LINE_END);
 		
 
-		carWindow.setSize(700, 300);
-		carWindow.setLocation(X / 4 - 100, Y / 3 - 80);
+		carWindow.setSize(740, 400);
+		carWindow.setLocation(X / 4 - 120, Y / 2);
 		carWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		carWindow.setVisible(true);
 	   
@@ -83,7 +82,7 @@ public class Simulator extends JFrame{
 	
 		
 		channelWindow.setSize(500, 200);
-		channelWindow.setLocation(X * 5 / 6 + 250, Y / 2 + 100);
+		channelWindow.setLocation(X * 5 / 6 + 250, Y / 2 - 100);
 		channelWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		channelWindow.setVisible(true);
 	}
@@ -99,7 +98,7 @@ public class Simulator extends JFrame{
 	
 		
 		baseWindow.setSize(500, 200);
-		baseWindow.setLocation(X  / 2 - 180, Y * 2 / 3 + 150);
+		baseWindow.setLocation(X * 5 / 6 + 250, Y * 4 / 5 + 150);
 		baseWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		baseWindow.setVisible(true);
 	}
