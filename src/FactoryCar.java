@@ -12,10 +12,10 @@ public class FactoryCar {
 	public Vector<ManualCar> factoryNinetyCars() {
 		Vector<ManualCar> result = new Vector<ManualCar>();
 		
-		for (int i = 0; i < 40; i++)
+		for (int i = 0; i < 50; i++)
 			result.add(new CarAdapter("automatic" + i, baseStation));
 				
-		for (int i= 40; i < 90; i++)
+		for (int i= 40; i < 50; i++)
 			result.add(new ManualCar("manual" + i, baseStation));
 			
 		return result;

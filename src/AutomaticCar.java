@@ -1,9 +1,12 @@
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AutomaticCar {
+	private long packetRate = 2000;
 	private String idCar;
 	private String display;
 	private float speed;
-	private String channel;
+	private Channel channel;
 	private Subject baseStation;
 	
 	public AutomaticCar(String id, Subject base) {
@@ -16,7 +19,7 @@ public class AutomaticCar {
 	public void oldUpdate(Packet packet) {
 		if (packet.id.equals("Broadcast")) {
 			if (packet.text.equals("Join") && (channel == null)) {
-				Packet packetToSend = new Packet(idCar, null, "Automatic", null);
+				Packet packetToSend = new Packet(idCar, null, "Automatic", null, 0);
 				System.out.println(idCar + ">> È arrivato un messaggio in broadcast");
 				baseStation.registerObserver(packetToSend);
 			}
@@ -31,16 +34,40 @@ public class AutomaticCar {
 				this.channel = packet.channel;
 				System.out.println(idCar + ">> Loggato! :D");
 				// LANCIO LOOP
+				
+			    Timer timer = new Timer();
+		        timer.schedule(new TimerTask() {
+
+		            @Override
+		            public void run() {
+		                sendPacket();
+		            }
+		        }, 0, packetRate);
+			} else if (packet.text.equals("You're OK!")) {
+				display = "You're OK! :)";
+			} else if (packet.text.equals("You have to decrease your speed!")) {
+				display = "You have to decrease your speed! :S";
 			}
 		} else
 			return;
 	}
 
-	public void send(Packet packet) {
-		
+	public void sendPacket() {
+		speed = (int) Math.random() * 150;
+		Packet packet = new Packet(idCar, null, null, null, (int) speed);
+		channel.dispatchPacketToStation(packet);
+		System.out.println(idCar + ">> Velocità inviata: " + packet.newSpeed);
 	}
 	
-	public void breaking() {
-		
+	public String getCarId() {
+		return idCar;
+	}
+	
+	public int getSpeed() {
+		return (int) speed;
+	}
+	
+	public String getDisplay() {
+		return display;
 	}
 }
