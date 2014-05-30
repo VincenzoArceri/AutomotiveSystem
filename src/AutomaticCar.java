@@ -62,32 +62,23 @@ public class AutomaticCar {
 	 * @param packet: pacchetto che deve essere ricevuto da un'auto
 	 */
 	public void oldUpdate(Packet packet) {
-		
-		// Pacchetto inviato in Broadcast
+
 		if (packet.id.equals("Broadcast")) {
-			// Caso in cui il messaggio è un invito di join e non sono registrato
 			if (packet.text.equals("Join") && (channel == null)) {
-				// Invio il tipo dell'auto e l'identificatore
 				Packet packetToSend = new Packet(idCar, null, "Automatic", null, 0);
 				System.out.println(idCar + ">> È arrivato un messaggio in broadcast");
-				// Tentativo di registrazione alla BaseStation
 				baseStation.registerObserver(packetToSend);
-			// Se l'auto è già registrata allora non effettuo alcuna operazione
-			} else if (channel != null)
+			}
+			else if (channel != null)
 				return;
-		// Caso in cui il pacchetto è indirizzato all'auto
 		} else if (packet.id.equals(idCar)) {
-			// Se tutti i canali sono pieni resto in attesa di un nuovo invito di join
 			if (packet.text.equals("All channels are full")) {
 				System.out.println(idCar + ">> È pieno! :(");
 				return;
-			// La richiesta di registrazione è stata accettata
-			} else if (packet.text.equals("You're logged")) {
-				// Canale di comunicazione associato all'auto
+			}
+			else if (packet.text.equals("You're logged")) {
 				this.channel = packet.channel;
-				
-				// Inizializzo il timer al packetRate dell'auto:
-				// Ogni packetRate ms verrà inviata la nuova velocità
+
 				timer.schedule(new TimerTask() {
 
 					@Override
@@ -95,21 +86,21 @@ public class AutomaticCar {
 						sendPacket();
 					}
 				}, 0, packetRate);
-			
-			// La veloctà è sotto i 50 Km/h
+
 			} else if (packet.text.equals("You're OK!")) {
 				System.out.println(idCar + ">> Sto andando bene");
-				
-			// La veloctà è sopra i 50 Km/h
+				display = "Good!";
 			} else if (packet.text.equals("You have to decrease your speed!")) {
 				System.out.println(idCar + ">> Non sto andando molto bene andando bene");
+				display = "I have to decrease my speed!";
 				breaking();
-			// Sono stato deregistrato dal sistema:
-			// cancello il timer e mi tolgo dal canale
 			} else if (packet.text.equals("Go away!")) {
 				timer.cancel();
-				idCar = "-1";
-				System.out.println("I'm dead!");
+				display = "Unregistered";
+				speed = 0;
+				channel.addSpace(10);
+				channel.removeToQueue(idCar);
+				idCar = "Unregistered";
 			}
 		} else
 			return;
@@ -120,6 +111,7 @@ public class AutomaticCar {
 	 */
 	public void sendPacket() {
 		double newSpeed = Math.random() * 150;
+		speed = (int) newSpeed;
 		Packet packet = new Packet(idCar, null, null, null, (int) newSpeed);
 		channel.dispatchPacketToStation(packet);
 		System.out.println(idCar + ">> Velocità inviata: " + packet.newSpeed);

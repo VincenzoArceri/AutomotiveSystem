@@ -47,13 +47,17 @@ public class ManualCar implements Observer {
 
 			} else if (packet.text.equals("You're OK!")) {
 				System.out.println(idCar + ">> Sto andando bene");
-				//sendPacket();
+				display = "Good!";
 			} else if (packet.text.equals("You have to decrease your speed!")) {
 				System.out.println(idCar + ">> Non sto andando molto bene andando bene");
-				//sendPacket();
+				display = "I have to decrease my speed!";
 			} else if (packet.text.equals("Go away!")) {
 				timer.cancel();
-				idCar = "-1";
+				display = "Unregistered";
+				speed = 0;
+				channel.addSpace(10);
+				channel.removeToQueue(idCar);
+				idCar = "Unregistered";
 			}
 		} else
 			return;
@@ -61,6 +65,7 @@ public class ManualCar implements Observer {
 
 	public void sendPacket() {
 		double newSpeed = Math.random() * 150;
+		speed = (int) newSpeed;
 		Packet packet = new Packet(idCar, null, null, null, (int) newSpeed);
 		channel.dispatchPacketToStation(packet);
 		System.out.println(idCar + ">> Velocità inviata: " + packet.newSpeed);

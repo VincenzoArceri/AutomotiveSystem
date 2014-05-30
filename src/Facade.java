@@ -1,11 +1,10 @@
 
 public class Facade {
 
-
-	public static void main(String[] args) {
-		BaseStation baseStation;
-		FactoryCar factory;
-		
+	BaseStation baseStation;
+	FactoryCar factory;
+	
+	public Facade() {
 		// Creazione della BaseStation
 		baseStation = new BaseStation();
 		

@@ -31,4 +31,24 @@ public class CarAdapter extends ManualCar {
 	public void update(Packet packet) {
 		this.automatic.oldUpdate(packet);
 	}
+	
+	@Override
+	public void sendPacket() {
+		this.automatic.sendPacket();
+	}
+
+	@Override
+	public String getCarId() {
+		return this.automatic.getCarId();
+	}
+
+	@Override
+	public int getSpeed() {
+		return this.automatic.getSpeed();
+	}
+	
+	@Override
+	public String getDisplay() {
+		return this.automatic.getDisplay();
+	}
 }

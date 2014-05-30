@@ -84,6 +84,10 @@ public class Channel {
 		queue.add(id);
 	}
 	
+	public void removeToQueue(String id) {
+		queue.remove(id);
+	}
+	
 	/**
 	 * Metodo per inviare un pacchetto alla BaseStation
 	 * 
@@ -99,6 +103,14 @@ public class Channel {
 	 */
 	public Vector<String> getIDs() {
 		return queue;
+	}
+	
+	public boolean isIn(String id) {
+		for (int i = 0; i < queue.size(); i++) {
+			if (queue.get(i).equals(id))
+				return true;
+		}
+		return false;
 	}
 	
 }

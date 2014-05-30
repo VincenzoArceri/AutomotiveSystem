@@ -51,7 +51,7 @@ public class BaseStation implements FactoryChannel, Subject {
 	/**
 	 * Tempo di deregistrazione di un'auto: ogni 12 secondi vengono deregistrate delle auto
 	 */
-	private int timeToUnregister = 12000;
+	private int timeToUnregister = 120;
 	
 	/**
 	 * Timer per l'invio dei Packet: ogni packetRate ms vengono prelevati i messaggi dal
@@ -216,9 +216,11 @@ public class BaseStation implements FactoryChannel, Subject {
 	@Override
 	public void unregisterObserver() {
 		Random random = new Random();
-
-		Packet packet1 = new Packet("manual" + random.nextInt(90), "Go away!", null, null, 0);
-		Packet packet2 = new Packet("automatic" + random.nextInt(90), "Go away!", null, null, 0);
+		String s1 = "manual" + random.nextInt(90);
+		String s2 = "automatic" + random.nextInt(90);
+		
+		Packet packet1 = new Packet(s1, "Go away!", null, null, 0);
+		Packet packet2 = new Packet(s2, "Go away!", null, null, 0);
 		
 		notifyObservers(packet1);
 		notifyObservers(packet2);
