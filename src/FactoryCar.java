@@ -1,15 +1,29 @@
 import java.util.Random;
 import java.util.Vector;
 
-
+/**
+ * Classe Factory per la creazione casuale di auto
+ * 
+ * @author Vincenzo Arceri, Matteo Calabria, Pietro Musoni, Carlo Tacchella
+ */
 public class FactoryCar {
-	
+	/**
+	 * Referenza alla BaseStation
+	 */
 	Subject baseStation;
 	
+	/**
+	 * Costruttore della Factory
+	 * @param baseStation: referenza alla BaseStation
+	 */
 	public FactoryCar(Subject baseStation) {
 		this.baseStation = baseStation;
 	}
-
+	
+	/**
+	 * Metodo per la creazione casuale di 90 auto, manuali o automatiche
+	 * @return result: Vector di auto create.
+	 */
 	public Vector<ManualCar> factoryNinetyCars() {
 		Vector<ManualCar> result = new Vector<ManualCar>();
 		
@@ -31,12 +45,20 @@ public class FactoryCar {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * Metodo per la creazione di un'auto Manual
+	 * @param id: identificatore dell'auto manuale
+	 */
 	public ManualCar createManualCar(String id) {
-		return new CarAdapter("Automatic" + id, null);
+		return new ManualCar("Manual" + id, null);
 	}
 	
+	/**
+	 * Metodo per la creazione di un'auto Automatic
+	 * @param id: identificatore dell'auto automatica
+	 */
 	public CarAdapter createAutomaticCar(String id) {
-		return new CarAdapter("Manual" + id, null);
+		return new CarAdapter("Automatic" + id, null);
 	}
 }

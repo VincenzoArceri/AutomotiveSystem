@@ -141,22 +141,30 @@ public class BaseStation implements FactoryChannel, Subject {
 		
 		// Per ogni canale attivo controllo che sia libero
 		for (int i = 0; i < channelsCreated; i++) {
+			// Se il canale è pieno e non è l'ultimo canale controllo il canale successivo
 			if (channels[i].isFull() && !channels[i].getId().equals("Channel" + numberChannel))
 				continue;
+			// Se il canale non è pieno controllo che ci siamo spazione per l'auto automatica
 			else if (!channels[i].isFull()) {
 				if (channels[i].getFreeSpaces() >= 10) {
 					channels[i].subSpace(10);
 					channels[i].addToQueue(id);
+					// L'auto è loggata, lo notifico all'auto
 					Packet packet = new Packet(id, "You're logged", null, channels[i], 0);
 					return packet;
 				}		
 			}
 		}
 		
+		// Se arrivo a questo punto significa che tutti
+		// i canali disponibili sono occupati;
+		// controllo che possa ancora creare canali
 		if (channelsCreated < numberChannel) {
 			channels[channelsCreated] = createChannel("Channel" + ++channelsCreated);
-			channels[channelsCreated- 1].subSpace(5);
+			channels[channelsCreated- 1].subSpace(10);
 			channels[channelsCreated- 1].addToQueue(id);
+			
+			// Creato il nuovo canale e registrata l'auto; lo notifico
 			Packet packet = new Packet(id, "You're logged", null, channels[channelsCreated - 1], 0);
 			return packet;
 		}
@@ -171,7 +179,9 @@ public class BaseStation implements FactoryChannel, Subject {
 	 * @return pacchetto da inviare all'auto
 	 */
 	private Packet registerManualCar(String id) {
+		// Per ogni canale attivo controllo che sia libero
 		for (int i = 0; i < channelsCreated; i++)
+			// Se il canale è pieno e non è l'ultimo canale controllo il canale successivo
 			if (channels[i].isFull() && !channels[i].getId().equals("Channel5"))
 				continue;
 			else if (!channels[i].isFull()) {
@@ -182,54 +192,76 @@ public class BaseStation implements FactoryChannel, Subject {
 					return packet;
 				}		
 			}
+		
+		// Se arrivo a questo punto significa che tutti
+		// i canali disponibili sono occupati;
+		// controllo che possa ancora creare canali
 		if (channelsCreated < 5) {
 			channels[channelsCreated] = createChannel("Channel" + ++channelsCreated);
 				channels[channelsCreated- 1].subSpace(5);
 				channels[channelsCreated- 1].addToQueue(id);
+				// L'auto è loggata, lo notifico all'auto
 				Packet packet = new Packet(id, "You're logged", null, channels[channelsCreated - 1], 0);
 				return packet;
 		}
 		
+		// Creato il nuovo canale e registrata l'auto; lo notifico
 		Packet packet = new Packet(id, "All channels are full", null, null, 0);
 		return packet;
 	}
-
+	
+	/**
+	 * Metodo per deregistrare delle auto random.
+	 */
 	@Override
 	public void unregisterObserver() {
 		Random random = new Random();
 
 		Packet packet1 = new Packet("manual" + random.nextInt(90), "Go away!", null, null, 0);
 		Packet packet2 = new Packet("automatic" + random.nextInt(90), "Go away!", null, null, 0);
-
-		for (ManualCar car: allCars) { 
-			car.update(packet1);
-			car.update(packet2);	
-		}
+		
+		notifyObservers(packet1);
+		notifyObservers(packet2);
 	}
-
+	
+	/**
+	 * Metodo per inviare un pacchetto in broadcast
+	 * 
+	 * @param packet: pacchetto da inviare in broadcast
+	 */
 	@Override
 	public void notifyObservers(Packet packet) {
 		for (ManualCar car: allCars) 
 			car.update(packet);		
 	}
 	
+	/**
+	 * Metodo invocato dai Channel che permette
+	 * alla BaseStation di ricevere un pacchetto
+	 * 
+	 * @param packet: pacchetto da ricevere
+	 */
 	public void receivePacket(Packet packet) {	
 		packets.add(packet);
 	}
 	
+	/**
+	 * Metodo per controllare i pacchetti ed inviare le relative
+	 * informazioni alle auto. Ogni secondo controllerà
+	 * la coda dei messaggi.
+	 * 
+	 */
 	public void checkPackets() {
 		
 		for (int i = 0; i < packets.size(); i++) {
 			if (packets.get(i).newSpeed <= threshold) {
 				Packet packetToSend = new Packet(packets.get(i).id, "You're OK!", null, null, 0);
-				for (ManualCar car: allCars) 
-					car.update(packetToSend);
+				notifyObservers(packetToSend);
 			} else {
 				Packet packetToSend = new Packet(packets.get(i).id, "You have to decrease your speed!", null, null, 0);
-
-				for (ManualCar car: allCars) 
-					car.update(packetToSend);		
+				notifyObservers(packetToSend);	
 			}
+			
 			packets.remove(i);
 		}	
 	}
