@@ -16,6 +16,7 @@ public class ManualCar implements Observer {
 		this.idCar = id;
 		this.speed = 0;
 		this.timer = new Timer();
+		this.display = new String("Not registred");
 	}
 
 	@Override
@@ -48,9 +49,9 @@ public class ManualCar implements Observer {
 			} else if (packet.text.equals("You're OK!")) {
 				System.out.println(idCar + ">> Sto andando bene");
 				display = "Good!";
-			} else if (packet.text.equals("You have to decrease your speed!")) {
+			} else if (packet.text.equals("Decrease your speed!")) {
 				System.out.println(idCar + ">> Non sto andando molto bene andando bene");
-				display = "I have to decrease my speed!";
+				display = "Decrease your speed!";
 			} else if (packet.text.equals("Go away!")) {
 				timer.cancel();
 				display = "Unregistered";
@@ -68,6 +69,7 @@ public class ManualCar implements Observer {
 		speed = (int) newSpeed;
 		Packet packet = new Packet(idCar, null, null, null, (int) newSpeed);
 		channel.dispatchPacketToStation(packet);
+		display = "Waiting for new display";
 		System.out.println(idCar + ">> Velocità inviata: " + packet.newSpeed);
 	}
 

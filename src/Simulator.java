@@ -21,13 +21,14 @@ import javax.swing.table.JTableHeader;
 public class Simulator extends JFrame{
 
 	public static Facade facade;
+	public static JLabel[] label = new JLabel[5];
 
 	static Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	static int X = (screen.width / 2); 
 	static int Y = (screen.height / 2); 
-	private static String[] columnNames = { "Car id", "speed", "type", "action", "display"}; 
+	private static String[] columnNames = { "ID Car", "Speed", "Display"}; 
 
-	private static String[] chStrings = { "channel 5", "channel 4", "channel 3", "channel 2", "channel 1" };
+	private static String[] chStrings = { "Channel 5", "Channel 4", "Channel 3", "Channel 2", "Channel 1" };
 
 	static  DefaultTableModel model;
 
@@ -71,8 +72,12 @@ public class Simulator extends JFrame{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				tableModel.setRowCount(0);
-				for(String[] macchina :createTable()){
+				for(String[] macchina :createTable()) {
 					tableModel.addRow(macchina); 	
+				}
+				
+				for (int i = 0; i < facade.baseStation.channelsCreated; i++) {
+					facade.baseStation.channels[i].getFullness(i);
 				}
 			}
 		});
@@ -83,29 +88,24 @@ public class Simulator extends JFrame{
 		frame.add(btnAddRow, BorderLayout.SOUTH);
 		frame.repaint();
 		frame.setVisible(true);
-
 	}
 
 
 
-	private static String[][] createTable(){
-		String[][] data = new String[facade.baseStation.allCars.size()+1][5]; 
-		//data[0] = columnNames;	  
+	private static String[][] createTable() {
+		String[][] data = new String[facade.baseStation.allCars.size()+1][3];  
 
 		int i=0;
 		int h=0;
 
 		for(ManualCar m : facade.baseStation.allCars){
 			i++;
-			
-			for(h=0; h<4;h++)
+
+			for(h=0; h<3;h++)
 				switch(h){
 				case(0): data[i][h] = m.getCarId(); break;
 				case(1): data[i][h] = "" + m.getSpeed(); break;
 				case(2): data[i][h] = m.getDisplay(); break;
-				//case(3): data[i][h] = "booooooo"; break;
-				case(3): data[i][h] =  "" + (int)(Math.random()*(10 -1))+1; break;
-
 				}
 		}
 		
@@ -115,7 +115,7 @@ public class Simulator extends JFrame{
 	public static void showChannels() {
 		JPanel[] channel = new JPanel[5];
 
-		JLabel[] label = new JLabel[5];
+		label = new JLabel[5];
 
 		JFrame channelWindow = new JFrame("Channel");
 
@@ -123,12 +123,11 @@ public class Simulator extends JFrame{
 
 		body.setLayout(new GridLayout(5, 1, 10, 10));
 
-		for( int i = 0; i < 5; i++){    //fino a channel.size()
-			label[i] = new JLabel(buildText(i+1));
+		for( int i = 0; i < 5; i++) {    
+			label[i] = new JLabel(buildText(i + 1));
 			channel[i] = new JPanel();
 			channel[i].add(label[i]);
 			body.add(channel[i]);
-
 		}
 
 
@@ -176,7 +175,7 @@ public class Simulator extends JFrame{
 		body.add(Bottone3);
 
 		baseWindow.setSize(300, 100);
-		baseWindow.setLocation(X * 5 / 6 + 250, Y * 4 / 5 +100);
+		baseWindow.setLocation(X * 5 / 6 + 250, Y * 4 / 5 + 130);
 		baseWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		baseWindow.setVisible(true);
 	}
@@ -188,7 +187,7 @@ public class Simulator extends JFrame{
 
 		result += "          " ;
 
-		result+= "\t" + "Busy channel";
+		result+= "\t" + "0 %";
 		return result;
 	}
 

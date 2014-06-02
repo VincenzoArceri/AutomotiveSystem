@@ -113,4 +113,13 @@ public class Channel {
 		return false;
 	}
 	
+	public void getFullness(int index) {
+		String result;
+		result = "Channel " + (index + 1) + "\t" + ":     ";
+		result += "          " ;
+		result+= "\t" + (capacity - freeSpace) + "%";
+		Simulator.label[index].setText(result);
+
+	}
+	
 }

@@ -21,7 +21,7 @@ public class BaseStation implements FactoryChannel, Subject {
 	/**
 	 * Numero massimo di canali creabili
 	 */
-	private static final int numberChannel = 500;
+	private static final int numberChannel = 5;
 	
 	/**
 	 * Tutte le macchine (registrate ad un canale o meno) presenti nel sistema
@@ -51,7 +51,7 @@ public class BaseStation implements FactoryChannel, Subject {
 	/**
 	 * Tempo di deregistrazione di un'auto: ogni 12 secondi vengono deregistrate delle auto
 	 */
-	private int timeToUnregister = 120;
+	private int timeToUnregister = 12000;
 	
 	/**
 	 * Timer per l'invio dei Packet: ogni packetRate ms vengono prelevati i messaggi dal
@@ -69,6 +69,7 @@ public class BaseStation implements FactoryChannel, Subject {
 	 * Costruttore della classe BaseStation
 	 */
 	public BaseStation() {
+		this.allCars = new Vector<ManualCar>();
 		// Inizialmente ci sarà solamente un canale attivo
 		channels[0] = createChannel("Channel1");	
 		channelsCreated++;
@@ -120,7 +121,7 @@ public class BaseStation implements FactoryChannel, Subject {
 	 * @param packet: pacchetto inviato dalle auto
 	 */
 	@Override
-	public void registerObserver(Packet packet) {
+	public synchronized void registerObserver(Packet packet) {
 		Packet packetToSend = null;
 		
 		if (packet.type.equals("Manual"))
@@ -128,8 +129,7 @@ public class BaseStation implements FactoryChannel, Subject {
 		else if (packet.type.equals("Automatic"))
 			packetToSend = registerAutomaticCar(packet.id);
 		
-		for (ManualCar car: allCars) 
-			car.update(packetToSend);
+		notifyObservers(packetToSend);
 	}
 	
 	/**
@@ -160,7 +160,8 @@ public class BaseStation implements FactoryChannel, Subject {
 		// i canali disponibili sono occupati;
 		// controllo che possa ancora creare canali
 		if (channelsCreated < numberChannel) {
-			channels[channelsCreated] = createChannel("Channel" + ++channelsCreated);
+			channelsCreated++;
+			channels[channelsCreated - 1] = createChannel("Channel" + channelsCreated);
 			channels[channelsCreated- 1].subSpace(10);
 			channels[channelsCreated- 1].addToQueue(id);
 			
@@ -192,24 +193,25 @@ public class BaseStation implements FactoryChannel, Subject {
 					return packet;
 				}		
 			}
-		
+
 		// Se arrivo a questo punto significa che tutti
 		// i canali disponibili sono occupati;
 		// controllo che possa ancora creare canali
 		if (channelsCreated < 5) {
-			channels[channelsCreated] = createChannel("Channel" + ++channelsCreated);
-				channels[channelsCreated- 1].subSpace(5);
-				channels[channelsCreated- 1].addToQueue(id);
-				// L'auto è loggata, lo notifico all'auto
-				Packet packet = new Packet(id, "You're logged", null, channels[channelsCreated - 1], 0);
-				return packet;
+			channelsCreated++;
+			channels[channelsCreated- 1] = createChannel("Channel" + channelsCreated);
+			channels[channelsCreated- 1].subSpace(5);
+			channels[channelsCreated- 1].addToQueue(id);
+			// L'auto è loggata, lo notifico all'auto
+			Packet packet = new Packet(id, "You're logged", null, channels[channelsCreated - 1], 0);
+			return packet;
 		}
-		
+
 		// Creato il nuovo canale e registrata l'auto; lo notifico
 		Packet packet = new Packet(id, "All channels are full", null, null, 0);
 		return packet;
 	}
-	
+
 	/**
 	 * Metodo per deregistrare delle auto random.
 	 */
@@ -224,6 +226,7 @@ public class BaseStation implements FactoryChannel, Subject {
 		
 		notifyObservers(packet1);
 		notifyObservers(packet2);
+		joinToMe();
 	}
 	
 	/**
@@ -233,8 +236,10 @@ public class BaseStation implements FactoryChannel, Subject {
 	 */
 	@Override
 	public void notifyObservers(Packet packet) {
-		for (ManualCar car: allCars) 
-			car.update(packet);		
+		int size = allCars.size();
+		
+		for (int i = 0; i < size; i++) 
+			allCars.get(i).update(packet);		
 	}
 	
 	/**
@@ -260,7 +265,7 @@ public class BaseStation implements FactoryChannel, Subject {
 				Packet packetToSend = new Packet(packets.get(i).id, "You're OK!", null, null, 0);
 				notifyObservers(packetToSend);
 			} else {
-				Packet packetToSend = new Packet(packets.get(i).id, "You have to decrease your speed!", null, null, 0);
+				Packet packetToSend = new Packet(packets.get(i).id, "Decrease your speed!", null, null, 0);
 				notifyObservers(packetToSend);	
 			}
 			

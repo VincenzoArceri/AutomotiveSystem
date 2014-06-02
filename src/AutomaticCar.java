@@ -54,7 +54,7 @@ public class AutomaticCar {
 		this.idCar = id;
 		this.speed = 0;
 		this.timer = new Timer();
-		this.display = new String("I'm alive! :)");
+		this.display = new String("Not registred");
 	}
 	/**
 	 * Metodo di update: tale metodo non viene mai utilizzato esplicitamente 
@@ -90,9 +90,9 @@ public class AutomaticCar {
 			} else if (packet.text.equals("You're OK!")) {
 				System.out.println(idCar + ">> Sto andando bene");
 				display = "Good!";
-			} else if (packet.text.equals("You have to decrease your speed!")) {
+			} else if (packet.text.equals("Decrease your speed!")) {
 				System.out.println(idCar + ">> Non sto andando molto bene andando bene");
-				display = "I have to decrease my speed!";
+				display = "Decrease your speed!";
 				breaking();
 			} else if (packet.text.equals("Go away!")) {
 				timer.cancel();

@@ -9,10 +9,10 @@ public class Facade {
 		baseStation = new BaseStation();
 		
 		// Creazione delle factory delle macchine
-		factory = new FactoryCar((Subject) baseStation);
+		factory = new FactoryCar((BaseStation) baseStation);
 		
 		// Creazione di 90 macchine
-		baseStation.allCars = factory.factoryNinetyCars();
+	    factory.factoryNinetyCars();
 		
 		// Setup del sistema
 		baseStation.joinToMe();
