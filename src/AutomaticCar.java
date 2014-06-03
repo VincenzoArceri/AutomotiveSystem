@@ -56,6 +56,7 @@ public class AutomaticCar {
 		this.timer = new Timer();
 		this.display = new String("Not registered");
 	}
+	
 	/**
 	 * Metodo di update: tale metodo non viene mai utilizzato esplicitamente 
 	 * poiché viene adattato tramite il patter Adapter ad una ManualCar

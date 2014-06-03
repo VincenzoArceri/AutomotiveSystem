@@ -1,16 +1,53 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+/**
+ * Classe di una macchina manuale
+ * 
+ * @author Vincenzo Arceri, Matto Calabria, Pietro Musoni, Carlo Tacchela
+ *
+ */
 public class ManualCar implements Observer {
+	/**
+	 * Packet rate in trasmissione dell'auto
+	 */
 	private int packetRate = 4000;
+	
+	/**
+	 * Identificatore dell'auto
+	 */
 	private String idCar;
+	
+	/**
+	 * Display dell'auto: visualizza i messaggi inviati dalla BaseStation
+	 */
 	private String display;
+	
+	/**
+	 * Velocità attuale dell'auto
+	 */
 	private float speed;
+	
+	/**
+	 * Canale di trasmissione associato all'auto
+	 */
 	private Channel channel;
+	
+	/**
+	 * Timer dell'auto: viene settato un timer per inviare i messaggi alla BaseStation
+	 */
 	private Timer timer;
+	
+	/**
+	 * Referenza della BaseStation
+	 */
 	private Subject baseStation;
 	
+	/**
+	 * Costruttore della classe ManualCar
+	 * @param id: identificatore della macchina
+	 * @param base: referenza alla BaseStation
+	 */
 	public ManualCar(String id, Subject base) {
 		this.baseStation = base;
 		this.idCar = id;
@@ -19,6 +56,11 @@ public class ManualCar implements Observer {
 		this.display = new String("Not registered");
 	}
 
+	/**
+	 * Metodo di update per ricevere messaggi dalla BaseStation
+	 * 
+	 * @param packet: pacchetto che deve essere ricevuto da un'auto
+	 */
 	@Override
 	public void update(Packet packet) {
 
@@ -62,7 +104,10 @@ public class ManualCar implements Observer {
 		} else
 			return;
 	}
-
+	
+	/**
+	 * Metodo per inviare un pacchetto alla BaseStation; genero casualmente una nuova velocità
+	 */
 	public void sendPacket() {
 		double newSpeed = Math.random() * 150;
 		speed = (int) newSpeed;
@@ -72,14 +117,26 @@ public class ManualCar implements Observer {
 		System.out.println(idCar + ">> Velocità inviata: " + packet.newSpeed);
 	}
 
+	/**
+	 * Metodo per recuperare l'identificativo dell'auto
+	 * @return idCar: identificativo dell'auto
+	 */
 	public String getCarId() {
 		return idCar;
 	}
-
+	
+	/**
+	 * Metodo per recuperare la velocità attuale dell'auto
+	 * @return speed: velocità attuale dell'auto
+	 */
 	public int getSpeed() {
 		return (int) speed;
 	}
-
+	
+	/**
+	 * Metodo per recuperare il display dell'auto
+	 * @return display: display dell'auto
+	 */
 	public String getDisplay() {
 		return display;
 	}
