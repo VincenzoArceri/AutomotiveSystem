@@ -40,7 +40,7 @@ public class Simulator extends JFrame{
 	static void showCars() {
 
 		facade = new Facade();
-		JFrame frame = new JFrame();
+		JFrame frame = new JFrame("Traffic situation");
 		frame.setBounds(100, 100, 500, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -51,9 +51,8 @@ public class Simulator extends JFrame{
 		splitPane.setLeftComponent(scrollPane);
 
 		final DefaultTableModel tableModel = new DefaultTableModel(columnNames,0);
-
 		table = new JTable(tableModel);
-
+	
 		table.setBounds(0, 0, 500, 500);
 
 		scrollPane.setViewportView(table);
@@ -97,15 +96,17 @@ public class Simulator extends JFrame{
 
 		int i=0;
 		int h=0;
-
-		for(ManualCar m : facade.baseStation.allCars){
+		
+		for (int j = 0; j < facade.baseStation.allCars.size(); j++) {
+		
+		//for(ManualCar m : facade.baseStation.allCars){
 			i++;
 
 			for(h=0; h<3;h++)
 				switch(h){
-				case(0): data[i][h] = m.getCarId(); break;
-				case(1): data[i][h] = "" + m.getSpeed(); break;
-				case(2): data[i][h] = m.getDisplay(); break;
+				case(0): data[i][h] = facade.baseStation.allCars.get(j).getCarId(); break;
+				case(1): data[i][h] = "" + facade.baseStation.allCars.get(j).getSpeed(); break;
+				case(2): data[i][h] = facade.baseStation.allCars.get(j).getDisplay(); break;
 				}
 		}
 		
@@ -137,48 +138,7 @@ public class Simulator extends JFrame{
 		channelWindow.setVisible(true);
 	}
 
-	public static void showBase() {
-
-		JFrame baseWindow = new JFrame("Base");
-
-		Container body = baseWindow.getContentPane();
-
-		body.setLayout(new GridLayout(3, 1, 2, 2));
-
-		JButton Bottone1 = new JButton("Action 1");
-		JButton Bottone2 = new JButton("Action 2");
-		JButton Bottone3 = new JButton("Action 3");
-
-
-		Bottone1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
-		Bottone2.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
-
-		Bottone3.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
-
-		body.add(Bottone1);
-		body.add(Bottone2);
-		body.add(Bottone3);
-
-		baseWindow.setSize(300, 100);
-		baseWindow.setLocation(X * 5 / 6 + 250, Y * 4 / 5 + 130);
-		baseWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		baseWindow.setVisible(true);
-	}
+	
 
 
 	private static String buildText(int channel){
@@ -194,7 +154,6 @@ public class Simulator extends JFrame{
 	public static void main(String args[]){
 
 		Simulator.showChannels();
-		Simulator.showBase();
 		Simulator.showCars();
 
 	}

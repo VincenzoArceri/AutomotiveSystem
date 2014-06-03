@@ -16,7 +16,7 @@ public class ManualCar implements Observer {
 		this.idCar = id;
 		this.speed = 0;
 		this.timer = new Timer();
-		this.display = new String("Not registred");
+		this.display = new String("Not registered");
 	}
 
 	@Override
@@ -27,8 +27,7 @@ public class ManualCar implements Observer {
 				Packet packetToSend = new Packet(idCar, null, "Manual", null, 0);
 				System.out.println(idCar + ">> È arrivato un messaggio in broadcast");
 				baseStation.registerObserver(packetToSend);
-			}
-			else if (channel != null)
+			} else if (channel != null)
 				return;
 		} else if (packet.id.equals(idCar)) {
 			if (packet.text.equals("All channels are full")) {
@@ -52,11 +51,11 @@ public class ManualCar implements Observer {
 			} else if (packet.text.equals("Decrease your speed!")) {
 				System.out.println(idCar + ">> Non sto andando molto bene andando bene");
 				display = "Decrease your speed!";
-			} else if (packet.text.equals("Go away!")) {
+			} else if (packet.text.equals("Go away!") && channel != null && !idCar.equals("Unregistered")) {
 				timer.cancel();
 				display = "Unregistered";
 				speed = 0;
-				channel.addSpace(10);
+				channel.addSpace(5);
 				channel.removeToQueue(idCar);
 				idCar = "Unregistered";
 			}

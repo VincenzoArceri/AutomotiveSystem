@@ -68,6 +68,8 @@ public class BaseStation implements FactoryChannel, Subject {
 	/**
 	 * Costruttore della classe BaseStation
 	 */
+	
+	Random random;
 	public BaseStation() {
 		this.allCars = new Vector<ManualCar>();
 		// Inizialmente ci sarà solamente un canale attivo
@@ -76,16 +78,7 @@ public class BaseStation implements FactoryChannel, Subject {
 		// Inizializzo i timer
 		this.timer = new Timer();
 		this.timerToUnregister = new Timer();
-	}
-	
-	/**
-	 * Metodo per invitare tutti le auto a registrarsi al sistema
-	 */
-	public void joinToMe() {
-		Packet packet = new Packet("Broadcast", "Join", null, null, 0);
-
-		notifyObservers(packet);
-
+		this.random = new Random();
 		// Inizializzo il timer per il checking dei messaggi
 		timer.schedule(new TimerTask() {
 
@@ -102,6 +95,16 @@ public class BaseStation implements FactoryChannel, Subject {
 				unregisterObserver();
 			}
 		}, 0, timeToUnregister);
+		
+		
+	}
+	
+	/**
+	 * Metodo per invitare tutti le auto a registrarsi al sistema
+	 */
+	public void joinToMe() {
+		Packet packet = new Packet("Broadcast", "Join", null, null, 0);
+		notifyObservers(packet);
 	}
 
 	/**
@@ -217,9 +220,8 @@ public class BaseStation implements FactoryChannel, Subject {
 	 */
 	@Override
 	public void unregisterObserver() {
-		Random random = new Random();
-		String s1 = "manual" + random.nextInt(90);
-		String s2 = "automatic" + random.nextInt(90);
+		String s1 = "Manual" + random.nextInt(90);
+		String s2 = "Automatic" + random.nextInt(90);
 		
 		Packet packet1 = new Packet(s1, "Go away!", null, null, 0);
 		Packet packet2 = new Packet(s2, "Go away!", null, null, 0);
@@ -256,7 +258,6 @@ public class BaseStation implements FactoryChannel, Subject {
 	 * Metodo per controllare i pacchetti ed inviare le relative
 	 * informazioni alle auto. Ogni secondo controllerà
 	 * la coda dei messaggi.
-	 * 
 	 */
 	public void checkPackets() {
 		

@@ -54,7 +54,7 @@ public class AutomaticCar {
 		this.idCar = id;
 		this.speed = 0;
 		this.timer = new Timer();
-		this.display = new String("Not registred");
+		this.display = new String("Not registered");
 	}
 	/**
 	 * Metodo di update: tale metodo non viene mai utilizzato esplicitamente 
@@ -94,7 +94,7 @@ public class AutomaticCar {
 				System.out.println(idCar + ">> Non sto andando molto bene andando bene");
 				display = "Decrease your speed!";
 				breaking();
-			} else if (packet.text.equals("Go away!")) {
+			} else if (packet.text.equals("Go away!") && channel != null && !idCar.equals("Unregistered")) {
 				timer.cancel();
 				display = "Unregistered";
 				speed = 0;

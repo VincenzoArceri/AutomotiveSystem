@@ -49,11 +49,11 @@ public class Channel {
 		return freeSpace == 0;
 	}
 	
-	public void addSpace(int packets) {
+	public synchronized void addSpace(int packets) {
 		freeSpace += packets;
 	}
 	
-	public void subSpace(int packets) {
+	public synchronized void subSpace(int packets) {
 		freeSpace -= packets;
 	}
 	
@@ -80,11 +80,11 @@ public class Channel {
 	 * 
 	 * @param id: identificatore dell'auto nel Channel
 	 */
-	public void addToQueue(String id) {
+	public synchronized void addToQueue(String id) {
 		queue.add(id);
 	}
 	
-	public void removeToQueue(String id) {
+	public synchronized void removeToQueue(String id) {
 		queue.remove(id);
 	}
 	
@@ -113,7 +113,7 @@ public class Channel {
 		return false;
 	}
 	
-	public void getFullness(int index) {
+	public synchronized void getFullness(int index) {
 		String result;
 		result = "Channel " + (index + 1) + "\t" + ":     ";
 		result += "          " ;
