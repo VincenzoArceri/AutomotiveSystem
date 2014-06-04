@@ -16,13 +16,12 @@ Carlo Tacchella - VR362194\\}
 
 \section{Specifiche del progetto}
 
-L' \textit{Automotive System} è un esempio di sistema per connettere tramite rete wireless, automobili su un tratto stradale ad una vase centrale per il controllo delle velocità e del traffico. Il sistema è composto da tre nodi principali: i channel, la base station e le automobili. La base
-station invia i pacchetti, per la comunicazione, in broadcast a tutte le auto sul tratto coperto dalla rete, queste rispondono direttamente alla stazione e qualora ci fossero posti disponibili sui canali controllati dalla stazione, vengono registrate su uno di essi. I canali possono essere al massimo cinque e hanno un limite di packet rate uguale a 100 pps. Una volta raggiunto il limite di auto connesse il canale non può ospitarne altre e sarà creato un ulteriore canale fino al raggiungimento del limite consentito (cinque canali).   
+L' \textit{Automotive System} è un esempio di sistema per connettere tramite rete wireless automobili su un tratto stradale ad una base centrale per il controllo delle velocità e del traffico. Il sistema è composto da tre nodi principali: i canali, la stazione e le automobili. La stazione invia i pacchetti per la comunicazione in broadcast a tutte le auto sul tratto coperto dalla rete, queste rispondono direttamente alla stazione e qualora ci fossero posti disponibili sui canali controllati dalla stazione vengono registrate su uno di essi. I canali possono essere al massimo cinque e hanno una capacità uguale a 100 pps. Una volta raggiunto il limite di auto connesse il canale non può ospitarne altre e sarà creato un ulteriore canale fino al raggiungimento del limite consentito (cinque canali).   
 Lo scenario è quindi il seguente:
 \begin{itemize}
-\item la \textit{base station} gestisce il sistema di registrazione delle auto e comunica in broadcast con le auto connesse al sistema per il controllo della velocità;
-\item i \textit{channel} collegano la automobili registrate con la base station e controllano il flusso di informazioni che queste inviano alla stazione;
-\item le \textit{automobili} possono essere di due tipi (automatiche o manuali) e in base al loro tipo reagiscono in modi differenti ai messaggi della base station per quanto riguarda l'adeguamento dei limiti di velocità. 
+\item la stazione gestisce il sistema di registrazione delle auto e comunica in broadcast con le auto connesse al sistema per il controllo della velocità;
+\item i canali collegano la automobili registrate con la stazione e controllano il flusso di informazioni che queste inviano alla stazione;
+\item leautomobili possono essere di due tipi (automatiche o manuali) e in base al loro tipo reagiscono in modi differenti ai messaggi della base station per quanto riguarda l'adeguamento dei limiti di velocità. 
 \end{itemize}
 
 
@@ -30,9 +29,6 @@ Lo scenario è quindi il seguente:
 Il diagramma delle classi riporta lo schema del progetto, mostrando graficamente le scelte implementative, le assunzioni ed i pattern utilizzati (Figura 1). Il sistema è principalmente composto da tre nodi che comunicano tra loro (auto, stazione e canali) come detto in precedenza. La stazione centrale ha un'interfaccia \textbf{FactoryChannel} per la creazione dei canali e una \textbf{Subject} per l'invio di pacchetti a tutte le auto tramite il metodo \textbf{update} dell'interfaccia \textbf{Observer} (come specificato dal omonimo design pattern). 
 
 Ogni auto è estesa da una classe \textbf{Adapter} per adattare le automobili manuali ad automibili automatiche, cambiando il metodo update che nel secondo caso, invece di mostrare semplicemente un messaggio su display, chiama automaticamente il metodo \textbf{break} che fa frenare l'auto in questione. Ogni auto viene creata da una classe \textbf{FactoryCar}. Se un'auto riesce a registrarsi su un canale, comunica tramite quest'ultimo con la base station, mentre tutti i pacchetti che partono dalla stazione vengono inviati direttamente alle auto in broadcast. I pacchetti sono definiti dalla classe \textbf{Packet}, che ne descrive i campi.
-
-#*******************************************definire la tega dei 12 secondi (unregister). ***************************************************
-
 
 \begin{figure}[htbp]
 \includegraphics[scale=0.24]{class_diagram.jpg}
@@ -48,10 +44,8 @@ Una tabella presenta la velocità, il display e l'id di tutte le automobili regi
 Se un'auto si deregistra vengono liberati i rispettivi pps dal flusso del canale permettendo così la registrazione di nuove vetture al canale.
 Quando un'auto invia la velocità alla base station, sul display viene scritto che l'auto in questione sta aspettando una risposta. 
 
-
-##########################################################  fare screenshot nuovo
 \begin{figure}[htbp]
-\includegraphics[scale=0.4]{screenshot.png}
+\includegraphics[scale=0.4]{class_diagram.jpg}
 \caption{Screenshot dell'applicazione}
 \label{class_dig}
 \end{figure}
@@ -63,5 +57,4 @@ I design pattern che abbiamo deciso di implementare sono: Observer e Factory. Il
 
 Il primo scenario in cui viene applicato il pattern factory è per creare le automobili che possono essere manuali o automatiche. Il secondo scenario in cui è utilizzato è per la creazione dei canali da parte della stazione centrale.
 
-################################################## da completare ... (Vinci e Cala)
 \end{document}
