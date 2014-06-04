@@ -12,7 +12,7 @@ import java.util.Vector;
  * @author Vincenzo Arceri, Matteo Calabria, Pietro Musoni, Carlo Tacchella
  *
  */
-public class BaseStation implements FactoryChannel, Subject {
+public class BaseStation extends Node implements FactoryChannel, Subject {
 	/**
 	 * Variabile che indica il limite di velocità delle macchine
 	 */
@@ -37,11 +37,6 @@ public class BaseStation implements FactoryChannel, Subject {
 	 * Canali creati
 	 */
 	public int channelsCreated = 0;
-	
-	/**
-	 * Velocità di trasmissione della BaseStation
-	 */
-	private int packetRate = 1000;
 	
 	/**
 	 * Vector di Packet inviati dai canali
@@ -71,6 +66,7 @@ public class BaseStation implements FactoryChannel, Subject {
 	
 	Random random;
 	public BaseStation() {
+		this.packetRate = 1000;
 		this.allCars = new Vector<ManualCar>();
 		// Inizialmente ci sarà solamente un canale attivo
 		channels[0] = createChannel("Channel1");	
@@ -79,6 +75,7 @@ public class BaseStation implements FactoryChannel, Subject {
 		this.timer = new Timer();
 		this.timerToUnregister = new Timer();
 		this.random = new Random();
+		
 		// Inizializzo il timer per il checking dei messaggi
 		timer.schedule(new TimerTask() {
 
@@ -95,8 +92,6 @@ public class BaseStation implements FactoryChannel, Subject {
 				unregisterObserver();
 			}
 		}, 0, timeToUnregister);
-		
-		
 	}
 	
 	/**
@@ -216,7 +211,7 @@ public class BaseStation implements FactoryChannel, Subject {
 	}
 
 	/**
-	 * Metodo per deregistrare delle auto random.
+	 * Metodo per deregistrare delle auto casualmente.
 	 */
 	@Override
 	public void unregisterObserver() {
@@ -228,6 +223,8 @@ public class BaseStation implements FactoryChannel, Subject {
 		
 		notifyObservers(packet1);
 		notifyObservers(packet2);
+		
+		// Invito altre auto a registrarsi
 		joinToMe();
 	}
 	

@@ -29,7 +29,7 @@ public class Channel {
 	/**
 	 * Vettore di auto associate al canale
 	 */
-	private Vector<String> queue = new Vector<String>();
+	private Vector<String> queue;
 	
 	/**
 	 * Costruttore di Channel
@@ -37,6 +37,7 @@ public class Channel {
 	 * @param base: referenza alla BaseStation
 	 */
 	public Channel(String id, BaseStation base) {
+		this.queue = new Vector<String>();
 		this.idChannel = id;
 		this.baseStation = base;
 	}

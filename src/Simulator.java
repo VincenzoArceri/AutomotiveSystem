@@ -1,22 +1,16 @@
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+
 
 public class Simulator extends JFrame{
 
@@ -27,19 +21,13 @@ public class Simulator extends JFrame{
 	static int X = (screen.width / 2); 
 	static int Y = (screen.height / 2); 
 	private static String[] columnNames = { "ID Car", "Speed", "Display"}; 
-
-	private static String[] chStrings = { "Channel 5", "Channel 4", "Channel 3", "Channel 2", "Channel 1" };
-
 	static  DefaultTableModel model;
-
-	private JFrame frame;
-	private static JScrollPane scrollPane;
 	private static JTable table;
-	private static DefaultTableModel tableModel;
 
 	static void showCars() {
 
 		facade = new Facade();
+		facade.initSimulator();
 		JFrame frame = new JFrame("Traffic situation");
 		frame.setBounds(100, 100, 500, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

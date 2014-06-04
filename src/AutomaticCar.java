@@ -8,48 +8,15 @@ import java.util.TimerTask;
  *
  */
 
-public class AutomaticCar {
-	/**
-	 * Packet rate in trasmissione dell'auto
-	 */
-	private long packetRate = 2000;
-	
-	/**
-	 * Identificatore dell'auto
-	 */
-	private String idCar;
-	
-	/**
-	 * Display dell'auto: visualizza i messaggi inviati dalla BaseStation
-	 */
-	private String display;
-	
-	/**
-	 * Velocità attuale dell'auto
-	 */
-	private float speed;
-	
-	/**
-	 * Canale di trasmissione associato all'auto
-	 */
-	private Channel channel;
-	
-	/**
-	 * Timer dell'auto: viene settato un timer per inviare i messaggi alla BaseStation
-	 */
-	private Timer timer;
-	
-	/**
-	 * Referenza della BaseStation
-	 */
-	private Subject baseStation;
-	
+public class AutomaticCar extends AbstractCar {
+
 	/**
 	 * Costruttore della classe AutomaticCar
 	 * @param id: identificatore della macchina
 	 * @param base: referenza alla BaseStation
 	 */
 	public AutomaticCar(String id, Subject base) {
+		this.packetRate = 2000;
 		this.baseStation = base;
 		this.idCar = id;
 		this.speed = 0;
@@ -69,8 +36,7 @@ public class AutomaticCar {
 				Packet packetToSend = new Packet(idCar, null, "Automatic", null, 0);
 				System.out.println(idCar + ">> È arrivato un messaggio in broadcast");
 				baseStation.registerObserver(packetToSend);
-			}
-			else if (channel != null)
+			} else if (channel != null)
 				return;
 		} else if (packet.id.equals(idCar)) {
 			if (packet.text.equals("All channels are full")) {
@@ -110,6 +76,7 @@ public class AutomaticCar {
 	/**
 	 * Mando un pacchetto alla BaseStation; genero casualmente una nuova velocità
 	 */
+	@Override
 	public void sendPacket() {
 		double newSpeed = Math.random() * 150;
 		speed = (int) newSpeed;
@@ -122,6 +89,7 @@ public class AutomaticCar {
 	 * Metodo per recuperare l'identificativo dell'auto
 	 * @return idCar: identificativo dell'auto
 	 */
+	@Override
 	public String getCarId() {
 		return idCar;
 	}
@@ -130,6 +98,7 @@ public class AutomaticCar {
 	 * Metodo per recuperare la velocità attuale dell'auto
 	 * @return speed: velocità attuale dell'auto
 	 */
+	@Override
 	public int getSpeed() {
 		return (int) speed;
 	}
@@ -138,6 +107,7 @@ public class AutomaticCar {
 	 * Metodo per recuperare il display dell'auto
 	 * @return display: display dell'auto
 	 */
+	@Override
 	public String getDisplay() {
 		return display;
 	}
@@ -146,6 +116,6 @@ public class AutomaticCar {
 	 * Metodo per decrementare automaticamente la velocità dell'auto
 	 */
 	public void breaking(){
-		speed = BaseStation.threshold;
+		speed = BaseStation.threshold - 1;
 	}
 }

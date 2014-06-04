@@ -7,48 +7,15 @@ import java.util.TimerTask;
  * @author Vincenzo Arceri, Matto Calabria, Pietro Musoni, Carlo Tacchela
  *
  */
-public class ManualCar implements Observer {
-	/**
-	 * Packet rate in trasmissione dell'auto
-	 */
-	private int packetRate = 4000;
-	
-	/**
-	 * Identificatore dell'auto
-	 */
-	private String idCar;
-	
-	/**
-	 * Display dell'auto: visualizza i messaggi inviati dalla BaseStation
-	 */
-	private String display;
-	
-	/**
-	 * Velocità attuale dell'auto
-	 */
-	private float speed;
-	
-	/**
-	 * Canale di trasmissione associato all'auto
-	 */
-	private Channel channel;
-	
-	/**
-	 * Timer dell'auto: viene settato un timer per inviare i messaggi alla BaseStation
-	 */
-	private Timer timer;
-	
-	/**
-	 * Referenza della BaseStation
-	 */
-	private Subject baseStation;
-	
+public class ManualCar extends AbstractCar implements Observer  {
+
 	/**
 	 * Costruttore della classe ManualCar
 	 * @param id: identificatore della macchina
 	 * @param base: referenza alla BaseStation
 	 */
 	public ManualCar(String id, Subject base) {
+		this.packetRate = 4000;
 		this.baseStation = base;
 		this.idCar = id;
 		this.speed = 0;
@@ -108,6 +75,7 @@ public class ManualCar implements Observer {
 	/**
 	 * Metodo per inviare un pacchetto alla BaseStation; genero casualmente una nuova velocità
 	 */
+	@Override
 	public void sendPacket() {
 		double newSpeed = Math.random() * 150;
 		speed = (int) newSpeed;
@@ -121,6 +89,7 @@ public class ManualCar implements Observer {
 	 * Metodo per recuperare l'identificativo dell'auto
 	 * @return idCar: identificativo dell'auto
 	 */
+	@Override
 	public String getCarId() {
 		return idCar;
 	}
@@ -129,6 +98,7 @@ public class ManualCar implements Observer {
 	 * Metodo per recuperare la velocità attuale dell'auto
 	 * @return speed: velocità attuale dell'auto
 	 */
+	@Override
 	public int getSpeed() {
 		return (int) speed;
 	}

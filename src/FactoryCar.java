@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 
 /**
  * Classe Factory per la creazione casuale di auto
