@@ -1,5 +1,4 @@
 \documentclass[a4paper,10pt]{article}
-\usepackage{amsmath}
 \usepackage[italian]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -37,8 +36,6 @@ L'azione periodica di invio dei messaggi è gestita tramite un TimerTask, che sc
 Ogni 12 secondi la stazione genererà due identificativi di auto e, se validi, le deregistrerà dal sistema, impedendogli di registrarsi in un secondo momento; successivamente invierà in broadcast un nuovo messaggio per invitare le auto eventualmente non ancora registrate ad entrare nel sistema.
 
 Le macchine vengono generate casualmente dalla classe FactoryCar, che genera 90 auto. 
-%%%%%%%
-
 
 \begin{figure}[htbp]
 \includegraphics[scale=0.24]{class_diagram.jpg}
@@ -46,21 +43,38 @@ Le macchine vengono generate casualmente dalla classe FactoryCar, che genera 90 
 \label{class_dig}
 \end{figure}
 
-
-La classe Facade crea la base station e il factory car per inizializzare il sistema, il facade viene creato invece dal main di Simulator che implementa anche la parte grafica composta da due finestre.
-Una tabella presenta la velocità, il display e l'id di tutte le automobili registrate ai canali mentre l'altra finestra segnala lo stato di ogni canale scrivendo la percentuale di occupazione. Dato che ogni canale riesce a reggere al massimo un packet rate di 100 pps, se si registra un auto manuale vengono occupati 5 pps, se se ne registra una automatica se ne occupano 10 (come da specifiche). 
-Se un'auto si deregistra vengono liberati i rispettivi pps dal flusso del canale permettendo così la registrazione di nuove vetture al canale.
-Quando un'auto invia la velocità alla base station, sul display viene scritto che l'auto in questione sta aspettando una risposta. 
-
 \section{Design pattern utilizzati}
 
-La stazione centrale ha un'interfaccia \textbf{FactoryChannel} per la creazione dei canali e un'interfaccia \textbf{Subject} per l'invio di pacchetti a tutte le auto tramite il metodo \textbf{update} dell'interfaccia \textbf{Observer} (come specificato dall' omonimo design pattern). 
+Per la creazione delle automobili abbiamo utilizzato il design pattern \textit{Factory}: la classe FactoryCar crea casualmente 90 auto, a intervalli regolari, fra automatiche e manuali. Lo stesso design pattern viene utilizzato per la creazione dei canali da parte della stazione; quest'ultima estende l'interfaccia \textit{FactoryChannel} e quando v'è necessità crea un nuovo canale. In questo modo è possibile modificare agilmente il numero di canali ed il numero di auto, interagendo con le rispettive classi.
 
-Ogni auto è estesa da una classe \textbf{Adapter} per adattare le automobili manuali ad automibili automatiche, cambiando il metodo update che nel secondo caso, invece di mostrare semplicemente un messaggio su display, chiama automaticamente il metodo \textbf{break} che fa frenare l'auto in questione. Ogni auto viene creata da una classe \textbf{FactoryCar}. Se un'auto riesce a registrarsi su un canale, comunica tramite quest'ultimo con la base station, mentre tutti i pacchetti che partono dalla stazione vengono inviati direttamente alle auto in broadcast. I pacchetti sono definiti dalla classe \textbf{Packet}, che ne descrive i campi.
-I pattern implementati richiesti dalle specifiche sono: Facade e Adapter. Il primo è utilizzato per visualizzare lo stato di tutti i nodi, usati per l'interfaccia con l'utente. Il pattern Adapter viene utilizzato per adattare le auto automatiche in auto manuali, poiché differiscono solamente nel metodo update (come visto in precedenza, per le automatiche si chiama il metodo break in caso di messaggio di rallentamento mentre le altre stampano solo un messaggio sul display). 
+Nella nostra modellazione utilizziamo il design pattern \textit{Observer}: le automobili osservanno la stazione, che costituisce il \textit{Subject} del pattern. La stazione ha comunque una referenza a tutte le auto in circolazione per poter inviare i messaggi necessari nella fase di setup, cioè l'invito a registrarsi come Observer presso di essa.  Non abbiamo implementato il pattern Observer fra i canali e la stazione poiché la stazione è unica.
 
-I design pattern che abbiamo deciso di implementare sono: Observer e Factory. Il modello Observer permette la comunicazione diretta tra la base station e le automobili, inizialmente in entrambe le direzioni per gestire la registrazione delle auto sul canale, in seguito a una direzione ovvero dalla base station alle auto per l'invio in broadcast dei pacchetti di comunicazione (canale pieno, rallenta etc..).
+Il pattern \textit{Adapter} viene utilizzato per adattare le auto automatiche a quelle manuali, in modo tale che il sistema, ad alto livello, conosca solo l'interfaccia di un'auto manuale (infatti gli unici costruttori invocati sono quelli di ManualCar e CarAdapter, cioè l'adattamento di un'auto automatica); ogni metodo viene adattato, in particolare il metodo \textit{oldUpdate}, metodo di AutomaticCar che in aggiunta invoca il metodo \textit{breaking}, che permette alla stazione di decrementare automaticamente la velocità della auto automatiche che superano la velocità limite espressa dal campo \textit{threshold} della stazione.
 
-Il primo scenario in cui viene applicato il pattern factory è per creare le automobili che possono essere manuali o automatiche. Il secondo scenario in cui è utilizzato è per la creazione dei canali da parte della stazione centrale.
+Il pattern \textit{Facade} viene utilizzato per creare un'interfaccia unica per poter interagire con l'intero sistema: la classe Facade conosce solamente la stazione e la factoryCar, che a loro volta conoscono rispettivamente i canali e le auto in circolazione; in questo modo l'interazione con il sistema può avvenire solamente tramite questa classe, nascondendo la reale implementazione degli oggetti utilizzati, in accordo con il principio di incapsulamento del paradigma ad oggetti.
+
+\section{Simulazione del sistema}
+
+La simulazione viene effettuata graficamente dalla classe Simulator e da alcune stampe a terminale: la classe Simulator consiste di una tabella contenente le macchine nel sistema dove per ognuna riportiamo l'identificativo, la velocità ed il messaggio sul display; i possibili messaggi sono i seguenti:
+\begin{itemize}
+\item \textit{Not registered}: viene visualizzato sul display dell'auto creata ma non ancora registrata presso la stazione;
+\item \textit{Unregistered}: viene visualizzato sul display dell'auto quando quest'ultima viene deregistrata dal sistema;
+\item \textit{Waiting for new display}: viene visualizzato sul display quando l'auto ha inviato la propria velocità ma non ha ancora ricevuto una risposta dalla stazione;
+\item \textit{Good!}: viene visualizzato sul display dell'auto che rispetta la velocità limite;
+\item \textit{Decrease your speed!}:  viene visualizzato sul display dell'auto che non rispetta la velocità limite;
+\item \textit{Breaking}: viene visualizzato dalle auto automatiche quando la stazione rileva in esse un'eccessiva velocità e decide di decrementarla automaticamente. 
+\end{itemize}
+
+Inoltre viene riportata una finestra rappresentante la percentuale di riempimento di ciascun canale. Tutte le azione intraprese dalla stazione vengono visualizzate a terminale tramite delle stampe.
+
+Per aggiornare i dati è necessario premere sul pulsante \textit{Refresh}.
+
+Di seguito riportiamo un screenshot della simulazione.
+
+\begin{figure}[htbp]
+\includegraphics[scale=0.32]{screenshot.png}
+\caption{Simulazione del sistema}
+\label{screenshot}
+\end{figure}
 
 \end{document}
